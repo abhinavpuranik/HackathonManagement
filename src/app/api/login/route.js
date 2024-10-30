@@ -1,42 +1,42 @@
-// /src/app/api/login/route.js
 import mysql from 'mysql2/promise';
-
-// Create a MySQL connection
 const pool = mysql.createPool({
   host: 'localhost',  // Replace with your DB host
   user: 'root',        // Replace with your DB user
   password: 'Aadi@157', // Replace with your DB password
   database: 'HackathonManagement', // Replace with your database name
 });
-
 export async function POST(request) {
   try {
-    const { username, password } = await request.json();
+    const { username, password, userType } = await request.json();
 
-    console.log("Received credentials:", username, password);
+    // Determine which table to query based on userType
+    const table = userType === 'club' ? 'clubs' : 'users';
 
-    // Query the database
     const [rows] = await pool.query(
-      'SELECT * FROM users WHERE username = ? AND password = ?',
-      [username, password]
+      `SELECT * FROM ${table} WHERE username = ? AND password=?`,
+      [username,password]
     );
 
-    if (rows.length > 0) {
-      return new Response(JSON.stringify({ message: rows[0] }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    } else {
-      return new Response(JSON.stringify({ message: 'Invalid credentials' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    if (rows.length === 0) {
+      return new Response(
+        JSON.stringify({ message: 'User not found' }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
     }
+
+    const user = rows[0];
+    if(rows.length>0)
+    {
+    return new Response(
+      JSON.stringify({ message: 'Login successful', user }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
   } catch (error) {
-    console.error("Database error:", error);
-    return new Response(JSON.stringify({ message: 'Server error' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    console.error('Login error:', error);
+    return new Response(
+      JSON.stringify({ message: 'Server error' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }

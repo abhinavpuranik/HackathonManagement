@@ -15,7 +15,7 @@ export async function POST(request) {
       'SELECT * FROM users WHERE username = ?',
       [username]
     );
-
+    
     if (existingUser.length > 0) {
       return new Response(
         JSON.stringify({ message: 'Username already exists' }),

@@ -1,0 +1,38 @@
+.dashboard {
+    padding: 20px;
+    background-color: #1e1e1e;
+    min-height: 100vh;
+    color: #fff;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .signOutButton {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .signOutButton:hover {
+    background-color: #e53935;
+  }
+  
+  .content h2 {
+    margin-top: 20px;
+  }
+  
+  .hackathonItem {
+    background-color: #333;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  

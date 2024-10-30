@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import styles from './RegistrationForm.module.css'; // Import CSS
+import styles from './SignUpForm.module.css'; // Import CSS
 
 const RegistrationForm = () => {
   const [username, setUsername] = useState('');

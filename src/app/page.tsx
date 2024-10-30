@@ -3,7 +3,7 @@ import SignForm from './components/SignUpForm'
 const LoginPage = () => {
   return (
     <div>
-      <SignForm />
+      <LoginForm />
     </div>
   );
 };
