@@ -1,13 +1,11 @@
-
-
-export default function Home() {
+import LoginForm from './components/LoginForm';
+import SignForm from './components/SignUpForm'
+const LoginPage = () => {
   return (
-    
-      <main>
-        <h1>Dashboard</h1>
-      </main>
-      
+    <div>
+      <LoginForm />
+    </div>
   );
-}
+};
 
-
+export default LoginPage;
