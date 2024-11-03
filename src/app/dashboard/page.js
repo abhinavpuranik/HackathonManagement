@@ -4,17 +4,18 @@ import { useRouter } from 'next/navigation';
 import styles from './Dashboard.module.css';
 
 const Dashboard = () => {
-  const [hackathons, setHackathons] = useState([]);
+  const [allHackathons, setAllHackathons] = useState([]);
+  const [registeredHackathons, setRegisteredHackathons] = useState([]);
   const router = useRouter();
 
-  // Fetch hackathons on component mount
+  // Fetch all hackathons and user registered hackathons on component mount
   useEffect(() => {
     const fetchHackathons = async () => {
       try {
-        const res = await fetch('/api/hackathons');
+        const res = await fetch('/api/hackathons'); // Fetch all hackathons
         if (res.ok) {
           const data = await res.json();
-          setHackathons(data.hackathons);
+          setAllHackathons(data.hackathons);
         } else {
           console.error('Failed to fetch hackathons');
         }
@@ -23,12 +24,30 @@ const Dashboard = () => {
       }
     };
 
+    const fetchRegisteredHackathons = async () => {
+      const userId = localStorage.getItem('userId'); // Retrieve userId from localStorage
+      if (userId) {
+        try {
+          const res = await fetch(`/api/userHackathons?userId=${userId}`);
+          if (res.ok) {
+            const data = await res.json();
+            setRegisteredHackathons(data.hackathons);
+          } else {
+            console.error('Failed to fetch registered hackathons');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      }
+    };
+
     fetchHackathons();
+    fetchRegisteredHackathons();
   }, []);
 
   // Handle sign-out
   const handleSignOut = () => {
-    // Clear session logic (optional if you implement cookies/localStorage)
+    localStorage.removeItem('userId'); // Optionally clear user ID on sign-out
     router.push('/'); // Redirect to login page
   };
 
@@ -42,14 +61,27 @@ const Dashboard = () => {
       </header>
 
       <div className={styles.content}>
-        <h2>Hackathons</h2>
-        <ul>
-          {hackathons.map((hackathon, index) => (
-            <li key={index} className={styles.hackathonItem}>
-              {hackathon.name}
-            </li>
-          ))}
-        </ul>
+        <div className={styles.hackathons}>
+          <h2>All Hackathons</h2>
+          <ul>
+            {allHackathons.map((hackathon, index) => (
+              <li key={index} className={styles.hackathonItem}>
+                {hackathon.name}
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div className={styles.sidebar}>
+          <h2>Your Registered Hackathons</h2>
+          <ul>
+            {registeredHackathons.map((hackathon, index) => (
+              <li key={index} className={styles.hackathonItem}>
+                {hackathon.name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );

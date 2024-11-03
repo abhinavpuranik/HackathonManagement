@@ -1,38 +1,54 @@
 .dashboard {
-    padding: 20px;
-    background-color: #1e1e1e;
-    min-height: 100vh;
-    color: #fff;
-  }
-  
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .signOutButton {
-    padding: 10px 20px;
-    background-color: #f44336;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .signOutButton:hover {
-    background-color: #e53935;
-  }
-  
-  .content h2 {
-    margin-top: 20px;
-  }
-  
-  .hackathonItem {
-    background-color: #333;
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-  }
-  
+  padding: 20px;
+  background-color: #1e1e1e;
+  min-height: 100vh;
+  color: #fff;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.signOutButton {
+  padding: 10px 20px;
+  background-color: #f44336;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.signOutButton:hover {
+  background-color: #e53935;
+}
+
+.content {
+  display: flex; /* Flexbox layout for main content */
+}
+
+.hackathons {
+  flex: 3; /* Occupy more space for all hackathons */
+  padding-right: 20px; /* Space between all hackathons and sidebar */
+}
+
+.sidebar {
+  flex: 1; /* Fixed width for sidebar, occupies less space */
+  padding-left: 20px; /* Space between sidebar and all hackathons */
+  border-left: 1px solid #444; /* Optional border */
+}
+
+.hackathons h2,
+.sidebar h2 {
+  margin-bottom: 10px;
+}
+
+.hackathonItem {
+  background-color: #333;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 5px;
+}

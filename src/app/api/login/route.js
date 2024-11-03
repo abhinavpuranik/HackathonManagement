@@ -1,37 +1,34 @@
 import mysql from 'mysql2/promise';
 const pool = mysql.createPool({
-  host: 'localhost',  // Replace with your DB host
-  user: 'root',        // Replace with your DB user
-  password: 'Aadi@157', // Replace with your DB password
-  database: 'HackathonManagement', // Replace with your database name
+  host: 'localhost',
+  user: 'root',
+  password: 'mysql',
+  database: 'HackathonManagement',
 });
+
 export async function POST(request) {
   try {
     const { username, password, userType } = await request.json();
 
-    // Determine which table to query based on userType
-    const table = userType === 'club' ? 'clubs' : 'users';
-
+    // Query the `users` table for the user based on username, password, and privilege
     const [rows] = await pool.query(
-      `SELECT * FROM ${table} WHERE username = ? AND password=?`,
-      [username,password]
+      `SELECT * FROM users WHERE username = ? AND password = ? AND privilege = ?`,
+      [username, password, userType]
     );
 
     if (rows.length === 0) {
       return new Response(
-        JSON.stringify({ message: 'User not found' }),
+        JSON.stringify({ message: 'User not found or privilege does not match' }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     const user = rows[0];
-    if(rows.length>0)
-    {
     return new Response(
-      JSON.stringify({ message: 'Login successful', user }),
+      JSON.stringify({ message: 'Login successful', userId: user.user_id, username: user.username }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
-  }
+
   } catch (error) {
     console.error('Login error:', error);
     return new Response(
@@ -40,3 +37,4 @@ export async function POST(request) {
     );
   }
 }
+

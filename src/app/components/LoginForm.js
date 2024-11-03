@@ -1,17 +1,15 @@
 'use client';
 import React, { useState } from 'react';
-import styles from './LoginForm.module.css'; // Import CSS
-import { useRouter } from 'next/navigation'; // Import the useRouter hook
+import styles from './LoginForm.module.css';
+import { useRouter } from 'next/navigation';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('user'); // Default selection: user
+  const [userType, setUserType] = useState('user');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
-  const router = useRouter(); // Initialize the router
-
-
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,9 +26,13 @@ const LoginForm = () => {
       const data = await res.json();
   
       if (res.ok) {
+        // Store the user ID and username in local storage
+        localStorage.setItem('userId', data.userId); // Save user ID
+        localStorage.setItem('username', data.username); // Save username (optional)
+  
         setUsername('');
         setPassword('');
-        router.push('/dashboard'); // Redirect to dashboard on success
+        router.push('/dashboard');
       } else {
         setError(data.message);
       }
@@ -40,6 +42,7 @@ const LoginForm = () => {
     }
   };
   
+
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <h2 className={styles.title}>Login</h2>
@@ -52,6 +55,7 @@ const LoginForm = () => {
       >
         <option value="user">User</option>
         <option value="club">Club</option>
+        <option value="admin">Admin</option>
       </select>
 
       <label className={styles.label}>Username</label>
@@ -78,7 +82,7 @@ const LoginForm = () => {
       <button type="submit" className={styles.button}>
         Login
       </button>
-      <button  className={styles.button} onClick={()=>{router.push('/SignUp');}}>
+      <button className={styles.button} onClick={() => { router.push('/SignUp'); }}>
         Sign Up
       </button>
     </form>

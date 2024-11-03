@@ -6,6 +6,7 @@ const RegistrationForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [privilege, setPrivilege] = useState('user'); // New state for privilege
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -28,7 +29,7 @@ const RegistrationForm = () => {
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, privilege }),
       });
 
       const data = await res.json();
@@ -37,6 +38,7 @@ const RegistrationForm = () => {
         setUsername('');
         setPassword('');
         setConfirmPassword('');
+        setPrivilege('user'); // Reset privilege to default
       } else {
         setError(data.message);
       }
@@ -76,6 +78,19 @@ const RegistrationForm = () => {
         className={styles.input}
         required
       />
+
+      {/* Privilege Dropdown */}
+      <label className={styles.label}>Privilege</label>
+      <select
+        value={privilege}
+        onChange={(e) => setPrivilege(e.target.value)}
+        className={styles.input}
+        required
+      >
+        <option value="user">User</option>
+        <option value="club">Club</option>
+        <option value="admin">Admin</option>
+      </select>
 
       {error && <p className={styles.error}>{error}</p>}
       {message && <p className={styles.message}>{message}</p>}
