@@ -3,7 +3,7 @@ import mysql from 'mysql2/promise';
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'mysql',
+  password: 'Aadi@157',
   database: 'HackathonManagement',
 });
 
@@ -16,7 +16,7 @@ export async function GET(request) {
   }
 
   try {
-    // Step 1: Fetch all team_ids for the given user_id
+    // Step 1: Fetch all team_ids for the given id
     const [teamIds] = await pool.query(
       `SELECT team_id FROM team_members WHERE user_id = ?`,
       [userId]
@@ -32,10 +32,15 @@ export async function GET(request) {
 
     // Step 2: Fetch hackathon names based on the team_ids
     const [registrations] = await pool.query(
-      `SELECT hackathon_name FROM registrations WHERE team_id IN (?)`,
+      `SELECT name 
+       FROM hackathons 
+       WHERE hackathon_id IN (
+         SELECT hackathon_id 
+         FROM registrations 
+         WHERE team_id IN (?)
+       )`,
       [teamIdsArray]
     );
-
     // Return the hackathon names
     return new Response(JSON.stringify({ hackathons: registrations }), {
       status: 200,

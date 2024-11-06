@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 const LoginForm = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('user');
+  const [userType, setUserType] = useState('users');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const router = useRouter();
@@ -15,6 +15,7 @@ const LoginForm = () => {
     e.preventDefault();
     setError('');
     setMessage('');
+    console.log(userType);
   
     try {
       const res = await fetch('/api/login', {
@@ -53,8 +54,8 @@ const LoginForm = () => {
         onChange={(e) => setUserType(e.target.value)}
         className={styles.select}
       >
-        <option value="user">User</option>
-        <option value="club">Club</option>
+        <option value="users">User</option>
+        <option value="clubs">Club</option>
         <option value="admin">Admin</option>
       </select>
 

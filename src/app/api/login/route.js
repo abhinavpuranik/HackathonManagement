@@ -2,7 +2,7 @@ import mysql from 'mysql2/promise';
 const pool = mysql.createPool({
   host: 'localhost',
   user: 'root',
-  password: 'mysql',
+  password: 'Aadi@157',
   database: 'HackathonManagement',
 });
 
@@ -12,7 +12,7 @@ export async function POST(request) {
 
     // Query the `users` table for the user based on username, password, and privilege
     const [rows] = await pool.query(
-      `SELECT * FROM users WHERE username = ? AND password = ? AND privilege = ?`,
+      `SELECT * FROM ${userType} WHERE username = ? AND password = ?`,
       [username, password, userType]
     );
 
@@ -25,7 +25,7 @@ export async function POST(request) {
 
     const user = rows[0];
     return new Response(
-      JSON.stringify({ message: 'Login successful', userId: user.user_id, username: user.username }),
+      JSON.stringify({ message: 'Login successful', userId: user.id, username: user.username }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
 
