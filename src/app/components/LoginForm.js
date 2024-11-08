@@ -15,7 +15,6 @@ const LoginForm = () => {
     e.preventDefault();
     setError('');
     setMessage('');
-    console.log(userType);
   
     try {
       const res = await fetch('/api/login', {
@@ -30,10 +29,19 @@ const LoginForm = () => {
         // Store the user ID and username in local storage
         localStorage.setItem('userId', data.userId); // Save user ID
         localStorage.setItem('username', data.username); // Save username (optional)
-  
+
+        // Set redirect path based on userType
+        let redirectPath = '/dashboard';
+        if (userType === 'clubs') {
+          redirectPath = '/clubdashboard';
+        } else if (userType === 'admin') {
+          redirectPath = '/admindashboard';
+        }
+
+        // Redirect to the appropriate dashboard
         setUsername('');
         setPassword('');
-        router.push('/dashboard');
+        router.push(redirectPath);
       } else {
         setError(data.message);
       }
@@ -83,7 +91,7 @@ const LoginForm = () => {
       <button type="submit" className={styles.button}>
         Login
       </button>
-      <button className={styles.button} onClick={() => { router.push('/SignUp'); }}>
+      <button type="button" className={styles.button} onClick={() => { router.push('/SignUp'); }}>
         Sign Up
       </button>
     </form>
