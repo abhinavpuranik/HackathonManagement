@@ -1,0 +1,72 @@
+.dashboard {
+    padding: 20px;
+    background-color: #1e1e1e;
+    min-height: 100vh;
+    color: #fff;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .signOutButton {
+    padding: 10px 20px;
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .signOutButton:hover {
+    background-color: #e53935;
+  }
+  
+  .content h2 {
+    margin-top: 20px;
+  }
+  
+  .hackathonItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+
+/* Add this in Dashboard.module.css */
+.deleteButton {
+    padding: 8px 16px;
+    background-color: orange;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .deleteButton:hover {
+    background-color: #c0392b;
+  }
+
+  .buttonGroup {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .addHackathonButton {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .addHackathonButton:hover {
+    background-color: #45a049;
+  }
+  
+  

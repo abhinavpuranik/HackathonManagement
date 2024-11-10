@@ -1,14 +1,15 @@
 import mysql from 'mysql2/promise';
 
 const pool = mysql.createPool({
-    host: 'localhost',  // Replace with your DB host
-    user: 'root',        // Replace with your DB user
-    password: 'Aadi@157', // Replace with your DB password
-    database: 'HackathonManagement', // Replace with your database name
-  });
+  host: 'localhost',  // Replace with your DB host
+  user: 'root',       // Replace with your DB user
+  password: 'mysql',  // Replace with your DB password
+  database: 'HackathonManagement', // Replace with your database name
+});
+
 export async function POST(request) {
   try {
-    const { username, password } = await request.json();
+    const { username, password, privilege } = await request.json();
 
     // Check if the user already exists
     const [existingUser] = await pool.query(
@@ -23,10 +24,10 @@ export async function POST(request) {
       );
     }
 
-    // Insert the new user into the database
+    // Insert the new user into the database with privilege
     await pool.query(
-      'INSERT INTO users (username, password) VALUES (?, ?)',
-      [username, password]
+      'INSERT INTO users (username, password, privilege) VALUES (?, ?, ?)',
+      [username, password, privilege]
     );
 
     return new Response(

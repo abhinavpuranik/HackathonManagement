@@ -1,10 +1,11 @@
-import RegistrationForm from '../components/RegistrationForm';
+import HackathonRegistrationForm from '../components/HackathonRegistrationForm';
+
 
 export default function Registration() {
     return (
       
         <main>
-          <RegistrationForm />
+          <HackathonRegistrationForm />
         </main>
         
     );
