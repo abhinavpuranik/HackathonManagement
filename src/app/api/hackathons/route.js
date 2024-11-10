@@ -72,16 +72,52 @@ export async function POST(req) {
       summary,
       topics,
       max_participants_in_a_team,
-      // Exclude stall_id and judge_id from the request
-      // stall_id, 
-      // judge_id 
+      stall_id,
+      judge_id,
     } = await req.json();
 
+    let finalStallId = stall_id;
+    let finalJudgeId = judge_id;
+
+    // Check if stall_id is provided and exists
+    if (stall_id) {
+      const [stallCheck] = await pool.query('SELECT stall_id FROM stalls WHERE stall_id = ?', [stall_id]);
+      if (stallCheck.length === 0) {
+        // Insert new stall if it doesn't exist
+        const [stallResult] = await pool.query('INSERT INTO stalls (stall_name) VALUES (NULL)');
+        finalStallId = stallResult.insertId;
+      }
+    }
+
+    // Check if judge_id is provided and exists
+    if (judge_id) {
+      const [judgeCheck] = await pool.query('SELECT judge_id FROM judges WHERE judge_id = ?', [judge_id]);
+      if (judgeCheck.length === 0) {
+        // Insert new judge if it doesn't exist
+        const [judgeResult] = await pool.query('INSERT INTO judges (name, expertise) VALUES (NULL, NULL)');
+        finalJudgeId = judgeResult.insertId;
+      }
+    }
+
+    // Insert hackathon details
     const [result] = await pool.query(
       `INSERT INTO hackathons 
-      (name, date, time, location, poster_image, ppt_url, URL, summary, topics, max_participants_in_a_team) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, // Removed stall_id and judge_id from here
-      [name, date, time, location, poster_image, ppt_url, URL, summary, JSON.stringify(topics), max_participants_in_a_team] // Removed stall_id and judge_id from the values
+      (name, date, time, location, poster_image, ppt_url, URL, summary, topics, max_participants_in_a_team, stall_id, judge_id) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        name,
+        date,
+        time,
+        location,
+        poster_image,
+        ppt_url,
+        URL,
+        summary,
+        JSON.stringify(topics),
+        max_participants_in_a_team,
+        finalStallId,
+        finalJudgeId,
+      ]
     );
 
     return new Response(
@@ -96,5 +132,3 @@ export async function POST(req) {
     });
   }
 }
-
-

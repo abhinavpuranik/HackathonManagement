@@ -6,13 +6,14 @@ import styles from './Dashboard.module.css';
 const Dashboard = () => {
   const [allHackathons, setAllHackathons] = useState([]);
   const [registeredHackathons, setRegisteredHackathons] = useState([]);
+  const [statistics, setStatistics] = useState({ userCount: 0, hackathonCount: 0, registrationCount: 0 });
   const router = useRouter();
 
   // Fetch all hackathons and user registered hackathons on component mount
   useEffect(() => {
     const fetchHackathons = async () => {
       try {
-        const res = await fetch('/api/hackathons'); // Fetch all hackathons
+        const res = await fetch('/api/hackathons');
         if (res.ok) {
           const data = await res.json();
           setAllHackathons(data.hackathons);
@@ -25,7 +26,7 @@ const Dashboard = () => {
     };
 
     const fetchRegisteredHackathons = async () => {
-      const userId = localStorage.getItem('userId'); // Retrieve userId from localStorage
+      const userId = localStorage.getItem('userId');
       if (userId) {
         try {
           const res = await fetch(`/api/userHackathons?userId=${userId}`);
@@ -41,14 +42,28 @@ const Dashboard = () => {
       }
     };
 
+    const fetchStatistics = async () => {
+      try {
+        const res = await fetch('/api/statistics');
+        if (res.ok) {
+          const data = await res.json();
+          setStatistics(data);
+        } else {
+          console.error('Failed to fetch statistics');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
     fetchHackathons();
     fetchRegisteredHackathons();
+    fetchStatistics();
   }, []);
 
-  // Handle sign-out
   const handleSignOut = () => {
-    localStorage.removeItem('userId'); // Optionally clear user ID on sign-out
-    router.push('/'); // Redirect to login page
+    localStorage.removeItem('userId');
+    router.push('/');
   };
 
   return (
@@ -71,7 +86,7 @@ const Dashboard = () => {
             ))}
           </ul>
         </div>
-        
+
         <div className={styles.sidebar}>
           <h2>Your Registered Hackathons</h2>
           <ul>
@@ -82,6 +97,13 @@ const Dashboard = () => {
             ))}
           </ul>
         </div>
+      </div>
+
+      <div className={styles.statisticsBox}>
+        <h2>Statistics</h2>
+        <p>Total Users Registered: {statistics.userCount}</p>
+        <p>Total Hackathons: {statistics.hackathonCount}</p>
+        <p>Total Hackathon Registrations: {statistics.registrationCount}</p>
       </div>
     </div>
   );
