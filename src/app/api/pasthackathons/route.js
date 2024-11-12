@@ -9,7 +9,9 @@ const pool = mysql.createPool({
 
 export async function GET(request) {
   try {
-    const [rows] = await pool.query('SELECT name FROM hackathons');
+    await pool.query('CALL UpdateHackathonStatus()');
+
+    const [rows] = await pool.query('SELECT * FROM hackathons where status=0');
 
     return new Response(
       JSON.stringify({ hackathons: rows }),

@@ -1,4 +1,4 @@
-import HackathonRegistrationForm from '../components/HackathonRegistrationForm';
+import HackathonRegistrationForm from '../hackathonregistration/[id]/page';
 
 
 export default function Registration() {

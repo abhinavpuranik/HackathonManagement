@@ -1,15 +1,50 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { loadStripe } from '@stripe/stripe-js';
 import styles from './HackathonRegistrationForm.module.css';
 
-const HackathonRegistrationForm = () => {
-  const [users, setUsers] = useState([{ name: '' }]); // Start with one user
-  const maxUsers = 4;
+const stripePromise = loadStripe('pk_test_51QImcbCthuaqKWaWLNnOmuDTndiePHs3HVhRHc1RyreSomee2OcVROXsEYwYQnK6yRHEWdy31splsxpgsSeOUbpj00vdUUa1TD');
+
+const HackathonRegistrationForm = ({ params }) => {
+  const [users, setUsers] = useState([{ name: '' }]);
   const [teamName, setTeamName] = useState('');
-  const [hackathonName, setHackathonName] = useState(''); // New state for hackathon name
+  const [hackathonName, setHackathonName] = useState('');
   const [projectName, setProjectName] = useState('');
   const [googleSlides, setGoogleSlides] = useState('');
   const [githubLink, setGithubLink] = useState('');
+  const [maxUsers, setMaxUsers] = useState(4); // Default value
+  const [price, setPrice] = useState(0); // Price for the hackathon
+  const id = params.id;
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchHackathonDetails = async () => {
+      try {
+        const res = await fetch('/api/hackathonsdet', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          console.log(data);
+          setHackathonName(data.hackathon.name);
+          setMaxUsers(data.hackathon.max_participants_in_a_team);
+          setPrice(data.hackathon.pay); // Assuming price is in the hackathon details
+        } else {
+          console.error('Failed to fetch hackathon details');
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    if (id) {
+      fetchHackathonDetails();
+    }
+  }, [id]);
 
   const handleUserChange = (index, value) => {
     const newUsers = [...users];
@@ -20,6 +55,8 @@ const HackathonRegistrationForm = () => {
   const addUser = () => {
     if (users.length < maxUsers) {
       setUsers([...users, { name: '' }]);
+    } else {
+      alert(`You can only add up to ${maxUsers} participants.`);
     }
   };
 
@@ -28,42 +65,38 @@ const HackathonRegistrationForm = () => {
     setUsers(newUsers);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    // Prepare form submission data here
+  const handlePayment = async () => {
+    const stripe = await stripePromise;
+
     const formData = {
       users,
       teamName,
-      hackathonName, // Add hackathon name to the form data
+      hackathonName,
       projectName,
       googleSlides,
       githubLink,
+      price,
     };
-    console.log("Submitted form data: ", formData);
 
-    // Send data to the API
-    const response = await fetch('/api/hackathonregistration', {
+    const response = await fetch('/api/create-checkout-session', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(formData),
     });
 
-    if (response.ok) {
-      alert('Registration successful!');
-      // Reset form after successful registration
-      setUsers([{ name: '' }]);
-      setTeamName('');
-      setHackathonName(''); // Reset hackathon name
-      setProjectName('');
-      setGoogleSlides('');
-      setGithubLink('');
-    } else {
-      alert('Registration failed. Please try again.');
+    const session = await response.json();
+
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
+
+    if (result.error) {
+      console.error(result.error.message);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form className={styles.form}>
       <h2 className={styles.title}>Team Registration Form</h2>
 
       {users.map((user, index) => (
@@ -95,13 +128,14 @@ const HackathonRegistrationForm = () => {
         required
       />
 
-      <label className={styles.label}>Hackathon Name</label> {/* New input field for hackathon name */}
+      <label className={styles.label}>Hackathon Name</label>
       <input
         type="text"
         className={styles.input}
         value={hackathonName}
         onChange={(e) => setHackathonName(e.target.value)}
         required
+        readOnly
       />
 
       <label className={styles.label}>Project Name</label>
@@ -131,7 +165,7 @@ const HackathonRegistrationForm = () => {
         required
       />
 
-      <button type="submit" className={`${styles.button} ${styles.registerButton}`}>Register</button>
+      <button type="button" className={`${styles.button} ${styles.paymentButton}`} onClick={handlePayment}>Pay ${price}</button>
     </form>
   );
 };
