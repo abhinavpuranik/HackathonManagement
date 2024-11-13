@@ -1,0 +1,57 @@
+/* Scoped styles to hackathon-details-container */
+.hackathon-details-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+}
+
+.hackathon-details-container h1 {
+  font-size: 2.5rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.image-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.poster-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Apply styles to p inside .hackathon-details-container using a class for p */
+.hackathon-details-container .hackathon-details-text {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 10px 0;
+}
+
+.hackathon-details-container strong {
+  color: #333;
+}
+
+button.register-button {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+button.register-button:hover {
+  background-color: #0056b3;
+}

@@ -52,3 +52,22 @@
   padding: 10px;
   border-radius: 5px;
 }
+.statisticsBox {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #333;
+  border-radius: 5px;
+  color: #fff;
+  text-align: center;
+}
+.hackathonItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.teamCount {
+  margin-left: auto;
+  padding-left: 10px;
+  color: #888; /* Adjust color as needed */
+}

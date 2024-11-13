@@ -7,6 +7,7 @@ const Dashboard = () => {
   const [allHackathons, setAllHackathons] = useState([]);
   const [registeredHackathons, setRegisteredHackathons] = useState([]);
   const [pastHackathons, setPastHackathons] = useState([]);
+  const [statistics, setStatistics] = useState({ userCount: 0, hackathonCount: 0, registrationCount: 0 });
   const [view, setView] = useState('present'); // State variable to track the current view
   const router = useRouter();
 
@@ -43,8 +44,22 @@ const Dashboard = () => {
     };
 
     fetchHackathons();
+    fetchStatistics();
     fetchRegisteredHackathons();
   }, []);
+  const fetchStatistics = async () => {
+    try {
+      const res = await fetch('/api/statistics');
+      if (res.ok) {
+        const data = await res.json();
+        setStatistics(data);
+      } else {
+        console.error('Failed to fetch statistics');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const fetchPastHackathons = async () => {
     try {
@@ -93,16 +108,24 @@ const Dashboard = () => {
             Show Past Hackathons
           </button>
           <ul>
-            {view === 'present' && allHackathons.map((hackathon, index) => (
-              <li key={index} className={styles.hackathonItem} onClick={() => router.push(`/hackathondetails/${hackathon.hackathon_id}`)}>
-                {hackathon.name}
-              </li>
-            ))}
-            {view === 'past' && pastHackathons.map((hackathon, index) => (
-              <li key={index} className={styles.hackathonItem} onClick={() => router.push(`/hackathondetails/${hackathon.hackathon_id}`)}>
-                {hackathon.name}
-              </li>
-            ))}
+            {view === 'present' && allHackathons.map((hackathon, index) => {
+              console.log(hackathon); // Log the hackathon object
+              return (
+                <li key={index} className={styles.hackathonItem} onClick={() => router.push(`/hackathondetails/${hackathon.hackathon_id}`)}>
+                  {hackathon.name}
+                  <span className={styles.teamCount}>{hackathon.team_count} teams registered</span>
+                </li>
+              );
+            })}
+            {view === 'past' && pastHackathons.map((hackathon, index) => {
+              console.log(hackathon); // Log the hackathon object
+              return (
+                <li key={index} className={styles.hackathonItem} onClick={() => router.push(`/hackathondetails/${hackathon.hackathon_id}`)}>
+                  {hackathon.name}
+                  <span className={styles.teamCount}>{hackathon.team_count} teams registered</span>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -116,6 +139,12 @@ const Dashboard = () => {
             ))}
           </ul>
         </div>
+      </div>
+      <div className={styles.statisticsBox}>
+        <h2>Statistics</h2>
+        <p>Total Users Registered: {statistics.userCount}</p>
+        <p>Total Hackathons: {statistics.hackathonCount}</p>
+        <p>Total Hackathon Registrations: {statistics.registrationCount}</p>
       </div>
     </div>
   );

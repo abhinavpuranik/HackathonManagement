@@ -9,7 +9,7 @@ const pool = mysql.createPool({
 
 export async function POST(request) {
   try {
-    const { username, password, privilege } = await request.json();
+    const { username, password} = await request.json();
 
     // Check if the user already exists
     const [existingUser] = await pool.query(
@@ -26,8 +26,8 @@ export async function POST(request) {
 
     // Insert the new user into the database with privilege
     await pool.query(
-      'INSERT INTO users (username, password, privilege) VALUES (?, ?, ?)',
-      [username, password, privilege]
+      'INSERT INTO users (username, password) VALUES (?, ?)',
+      [username, password]
     );
 
     return new Response(

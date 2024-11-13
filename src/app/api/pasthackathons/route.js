@@ -11,8 +11,13 @@ export async function GET(request) {
   try {
     await pool.query('CALL UpdateHackathonStatus()');
 
-    const [rows] = await pool.query('SELECT * FROM hackathons where status=0');
-
+    const [rows] = await pool.query(`
+      SELECT h.*, COUNT(DISTINCT r.team_id) AS team_count
+      FROM hackathons h
+      LEFT JOIN registrations r ON h.hackathon_id = r.hackathon_id
+      WHERE h.status = 0
+      GROUP BY h.hackathon_id
+    `);
     return new Response(
       JSON.stringify({ hackathons: rows }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }

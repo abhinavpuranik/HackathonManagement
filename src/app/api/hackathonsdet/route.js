@@ -11,6 +11,7 @@ export async function POST(request) {
     const { id } = await request.json();
   console.warn("hiiggi"+id);
       const [rows] = await pool.query('SELECT * FROM hackathons where hackathon_id=?',[id]);
+      
       if (rows.length === 0) {
         return new Response( JSON.stringify({ message: "NO" }),
         { status: 400, headers: { 'Content-Type': 'application/json' }});

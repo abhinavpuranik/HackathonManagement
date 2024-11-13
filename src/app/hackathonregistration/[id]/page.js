@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { loadStripe } from '@stripe/stripe-js';
 import styles from './HackathonRegistrationForm.module.css';
 
@@ -15,8 +14,8 @@ const HackathonRegistrationForm = ({ params }) => {
   const [githubLink, setGithubLink] = useState('');
   const [maxUsers, setMaxUsers] = useState(4); // Default value
   const [price, setPrice] = useState(0); // Price for the hackathon
-  const id = params.id;
-  const router = useRouter();
+  const params1=React.use(params)
+  const { id } = params1;
 
   useEffect(() => {
     const fetchHackathonDetails = async () => {
@@ -78,20 +77,35 @@ const HackathonRegistrationForm = ({ params }) => {
       price,
     };
 
-    const response = await fetch('/api/create-checkout-session', {
+    // Call the API endpoint to perform the checks
+    const checkResponse = await fetch('/api/check-registration', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({users,teamName,hackathonName}),
     });
 
-    const session = await response.json();
+    const checkData = await checkResponse.json();
 
-    const result = await stripe.redirectToCheckout({
-      sessionId: session.id,
-    });
+    if (checkResponse.ok) {
+      // Proceed to payment if the checks pass
+      const response = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
 
-    if (result.error) {
-      console.error(result.error.message);
+      const session = await response.json();
+
+      const result = await stripe.redirectToCheckout({
+        sessionId: session.id,
+      });
+
+      if (result.error) {
+        console.error(result.error.message);
+      }
+    } else {
+      // Handle the error if the checks fail
+      alert(checkData.error);
     }
   };
 
