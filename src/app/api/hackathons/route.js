@@ -7,7 +7,6 @@ const pool = mysql.createPool({
   database: 'HackathonManagement',
 });
 
-
 export async function GET(request) {
   try {
     const [rows] = await pool.query('SELECT name FROM hackathons');
@@ -63,6 +62,7 @@ export async function DELETE(req) {
 export async function POST(req) {
   try {
     const {
+      userId,
       name,
       date,
       time,
@@ -77,13 +77,11 @@ export async function POST(req) {
       pay
     } = await req.json();
 
- 
-
     // Insert hackathon details
     const [result] = await pool.query(
       `INSERT INTO hackathons 
-      (name, date, time, location, poster_image, ppt_url, URL, summary, topics, max_participants_in_a_team,cashprize,pay) 
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      (name, date, time, location, poster_image, ppt_url, URL, summary, topics, max_participants_in_a_team,cashprize,pay,club_id) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`,
       [
         name,
         date,
@@ -96,7 +94,8 @@ export async function POST(req) {
         JSON.stringify(topics),
         max_participants_in_a_team,
         cashprize,
-        pay
+        pay,
+        userId
       ]
     );
 
@@ -112,3 +111,5 @@ export async function POST(req) {
     });
   }
 }
+
+// New function to fetch teams and users for a specific hackatho

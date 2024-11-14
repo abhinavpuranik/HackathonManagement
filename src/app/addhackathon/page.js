@@ -1,9 +1,13 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import styles from './AddHackathonForm.module.css';
 
 const AddHackathonForm = () => {
+  const userId = localStorage.getItem('userId');
+  const userType = localStorage.getItem('userType');
+
   const [formData, setFormData] = useState({
+    userId:null,
     name: '',
     date: '',
     time: '',
@@ -17,7 +21,15 @@ const AddHackathonForm = () => {
     cashprize: '',
     pay: '',
   });
-
+  useEffect(() => {
+    if (userType === 'clubs') {
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        userId: userId
+      }));
+    }
+  }, [userType, userId]);
+  useEffect(()=>{console.log(formData)},[formData])
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -44,6 +56,7 @@ const AddHackathonForm = () => {
       if (response.ok) {
         setMessage('Hackathon added successfully!');
         setFormData({
+          userId:'',
           name: '',
           date: '',
           time: '',

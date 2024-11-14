@@ -3,7 +3,7 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSearchParams } from 'next/navigation';
-
+import './success.module.css';
 const SuccessPage = () => {
   const searchParams = useSearchParams();
   console.log(searchParams);
@@ -39,7 +39,7 @@ const SuccessPage = () => {
   }, [session_id]);
 
   return (
-    <div>
+    <div className="success-page">
       <h1>Registration Successful</h1>
       <p>Your registration has been successfully completed.</p>
     </div>
